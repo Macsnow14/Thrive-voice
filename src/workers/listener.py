@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 14:34:07
+# @Last Modified time: 2017-05-15 15:08:57
 import socket
 from src.threads.base_worker import BaseWorker
 
@@ -15,7 +15,7 @@ class Listener(BaseWorker):
         self.frames = frames
         self.PORT = port
         self.listenSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.voiceServerSocket.bind(('127.0.0.1', self.PORT))
+        self.listenSocket.bind(('127.0.0.1', self.PORT))
         super(Listener, self).__init__(queue)
 
     def __del__(self):
@@ -29,5 +29,5 @@ class Listener(BaseWorker):
                     break
                 else:
                     self.queue.put_nowait(data)
-            soundData, addr = self.voiceServerSocket.recvfrom(self.BUFFER * self.CHANNELS * 2)
+            soundData, addr = self.listenSocket.recvfrom(self.BUFFER * self.CHANNELS * 2)
             self.frames.append(soundData)

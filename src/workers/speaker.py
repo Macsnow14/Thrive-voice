@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:38
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 14:41:07
+# @Last Modified time: 2017-05-15 15:09:05
 import socket
 from src.threads.base_worker import BaseWorker
 
@@ -24,4 +24,4 @@ class Speaker(BaseWorker):
                 else:
                     self.queue.put_nowait(data)
             if len(self.frames) > 0:
-                self.voiceClientSocket.sendto(self.frames.pop(0), (host, dial_port))
+                self.listenSocket.sendto(self.frames.pop(0), (host, dial_port))
