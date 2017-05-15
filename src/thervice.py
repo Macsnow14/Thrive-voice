@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 13:49:26
+# @Last Modified time: 2017-05-15 14:31:54
 import socket
 import pyaudio
 import fire
@@ -106,7 +106,7 @@ class PhoneServer(object):
                     self.queue.put_nowait(data)
             if len(self.inputFrames) == self.FREAM_BUFFER:
                 while True:
-                    if len(self.inputStream) == 0:
+                    if len(self.inputFrames) == 0:
                         break
                     stream.write(self.inputFrames.pop(0), self.BUFFER)
 
