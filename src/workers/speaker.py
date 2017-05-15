@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:38
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 15:09:05
+# @Last Modified time: 2017-05-15 15:43:57
 import socket
 from src.threads.base_worker import BaseWorker
 
@@ -13,6 +13,12 @@ class Speaker(BaseWorker):
         self.frames = frames
         self.speakSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         super(Speaker, self).__init__(queue)
+
+    def __del__(self):
+        try:
+            self.speakSocket = None
+        except AttributeError:
+            pass
 
     def run(self, host, dial_port):
         print('port is %s on host %s' % (dial_port, host))

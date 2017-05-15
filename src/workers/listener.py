@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 15:08:57
+# @Last Modified time: 2017-05-15 16:20:21
 import socket
 from src.threads.base_worker import BaseWorker
 
@@ -19,9 +19,13 @@ class Listener(BaseWorker):
         super(Listener, self).__init__(queue)
 
     def __del__(self):
-        self.listenSocket.close()
+        try:
+            self.listenSocket.close()
+        except AttributeError:
+            pass
 
     def run(self):
+        self.queue.put_nowait('server_ready')
         while True:
             if not self.queue.empty():
                 data = self.queue.get()
