@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 20:11:31
+# @Last Modified time: 2017-05-16 20:29:22
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -24,7 +24,7 @@ class Dialer(BaseWorker):
     def run(self):
         msg, host, port = self.recv()
         self.dialSocket.connect((host, port))
-        self.dialSocket.send(msg)
+        self.dialSocket.send(msg.encode())
         res = self.dialSocket.recv(128).decode()
         if res == 'accept':
             self.service.anwser(host, port - 1)

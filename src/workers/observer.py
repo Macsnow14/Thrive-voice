@@ -2,14 +2,14 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 20:27:16
+# @Last Modified time: 2017-05-16 20:31:18
 import socket
 from src.workers.base_worker import BaseWorker
 
 
 class Observer(BaseWorker):
 
-    def __init__(self, mainbox, service, port=12001):
+    def __init__(self, service, mainbox, port=12001):
         self.PORT = port
         self.connServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connServerSocket.bind(('', self.PORT))
