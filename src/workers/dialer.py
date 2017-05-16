@@ -2,17 +2,18 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 16:19:39
+# @Last Modified time: 2017-05-16 17:30:24
 import socket
-from src.threads.base_worker import BaseWorker
+from src.workers.base_worker import BaseWorker
 
 
 class Dialer(BaseWorker):
 
-    def __init__(self, queue, port, host):
-        self.PORT = port
+    def __init__(self, service, mainbox):
         self.dialSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        super(Dialer, self).__init__(queue)
+        self.service = service
+        self.mainbox = mainbox
+        super(Dialer, self).__init__()
 
     def __del__(self):
         try:
@@ -21,12 +22,12 @@ class Dialer(BaseWorker):
             pass
 
     def run(self):
-        self.dialSocket.connect((self.host, self.port))
-        self.dialSocket.send('dialReq')
+        msg, host, port = self.recv()
+        self.dialSocket.connect((host, port))
+        self.dialSocket.send(msg)
         res = self.dialSocket.recv(128).decode()
         if res == 'accept':
-            self.listener()
-            self.speaker(self.host, self.port)
+            self.service.anwser(host, port)
             self.dialSocket.send('client_ready')
         elif res == 'deny':
-            print('dial request denied.')
+            self.mainbox.put((1, 'dial request denied.'))

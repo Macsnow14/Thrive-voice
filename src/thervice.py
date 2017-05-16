@@ -2,61 +2,50 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 16:12:05
+# @Last Modified time: 2017-05-16 18:07:36
 import fire
-import queue
 import signal
 import time
-from threading import Thread
+from queue import Queue
+from .services.voice_service import VoiceService
+from .workers.dialer import Dialer
+from .workers.observer import Observer
 
 
 class PhoneServer(object):
-    inputFrames = []
-    outputFrames = []
-    queue = queue.Queue()
-    threads = []
 
     def __init__(self):
         # register a shutdown signal
+        self.mainbox = Queue()
+        self.observer = Observer(self.queue)
+        self.services = VoiceService()
         signal.signal(signal.SIGINT, self._signalHandler)
+
+        self.observer.start()
+        self.observer.send({'msg': 'observe'})
 
     def _signalHandler(self, signal, stack):
         self.queue.put_nowait('stop')
 
-    def listen(self):
-        inputStream = Thread(target=self.inputStream)
-        play = Thread(target=self.play)
-        inputStream.setDaemon(True)
-        play.setDaemon(True)
-        inputStream.start()
-        play.start()
-        self.threads.append(inputStream)
-        self.threads.append(play)
-
-    def speak(self, host, server_port):
-        record = Thread(target=self.record)
-        outputStream = Thread(target=self.outputStream, args=(host, server_port))
-        record.setDaemon(True)
-        outputStream.setDaemon(True)
-        record.start()
-        outputStream.start()
-        self.threads.append(outputStream)
-        self.threads.append(record)
-
     def mainThread(self):
         # should listen to TCP connection req for dial
         while True:
-            if not self.queue.empty():
+            if not self.mainbox.empty():
                 data = self.queue.get()
-                if data == 'dialReqRecv':
+                if data[0] == 'c':
+                    remoteAddr = None
+                    if data[1] == 'dialReqRecv':
+                        remoteAddr = data[2]
                     instruction = None
                     while instruction != 'accept' or 'deny':
                         instruction = input('Incoming telegram, accept or deny?')
-                    self.queue.put_nowait(instruction)
-                elif data == 'dialReqSend':
-                    pass
+                    self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
+                elif data[0] == 'e':
+                    print(data[1])
                 else:
-                    self.queue.put_nowait(data)
+                    pass
+
+
             time.sleep(0.1)
 
 

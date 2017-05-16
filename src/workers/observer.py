@@ -2,20 +2,22 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-15 15:57:50
+# @Last Modified time: 2017-05-16 17:29:08
 import socket
 from src.threads.base_worker import BaseWorker
 
 
 class Observer(BaseWorker):
 
-    def __init__(self, queue, port=12001):
+    def __init__(self, mainbox, service, port=12001):
         self.PORT = port
         self.connServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connServerSocket.bind(('127.0.0.1', self.PORT))
         self.connServerSocket.listen(5)
         self.connTransSocket = None
-        super(Observer, self).__init__(queue)
+        self.mainbox = mainbox
+        self.service = service
+        super(Observer, self).__init__()
 
     def __del__(self):
         try:
@@ -25,24 +27,22 @@ class Observer(BaseWorker):
             pass
 
     def run(self):
-        self.connTransSocket, self.remoteAddr = self.connServerSocket.accept()
         while True:
-            if not self.queue.empty():
-                data = self.queue.get()
-                if data == 'invisibility':
-                    break
-                elif data == 'accept':
-                    self.queue.put_nowait('start_listen')
-                elif data == 'server_ready':
-                    self.connTransSocket.send('accept')
-                    message = self.connTransSocket.recv(128).decode()
-                    if message == 'client_ready':
-                        self.queue.put_nowait('speak')
-                elif data == 'deny':
-                    self.connServerSocket.send('deny')
-                elif data == 'observe':
-                    message = self.connTransSocket.recv(128).decode()
-                    if eval(message)[0] == 'dialReq':
-                        self.queue.put_nowait('dialReqRecv')
-                else:
-                    self.queue.put_nowait(data)
+            msg = self.recv
+            if msg['msg'] == 'hangUp':
+                self.service.hangUp()
+                try:
+                    self.connTransSocket.send("{'code': 0, 'massage': 'remote_hang_up'")
+                except AttributeError:
+                    pass
+            elif msg['msg'] == 'accept':
+                self.service.awnser(msg['host'], msg['port'])
+            elif msg['msg'] == 'deny':
+                self.connServerSocket.send('deny')
+            elif msg['msg'] == 'observe':
+                self.connTransSocket, self.remoteAddr = self.connServerSocket.accept()
+                message = self.connTransSocket.recv(128).decode()
+                if message == 'dialReq':
+                    self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr))
+            else:
+                pass
