@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 19:16:03
+# @Last Modified time: 2017-05-16 20:05:47
 import fire
 import signal
 import time
@@ -18,24 +18,28 @@ class PhoneServer(object):
         # register a shutdown signal
         self.mainbox = Queue()
         self.service = VoiceService()
-        self.observer = Observer(self.service, self.queue)
-        self.dialer = Dialer(self.service, self.queue)
-        signal.signal(signal.SIGINT, self._signalHandler)
+        self.observer = Observer(self.service, self.mainbox)
+        self.dialer = Dialer(self.service, self.mainbox)
+        # signal.signal(signal.SIGINT, self._signalHandler)
 
         self.observer.start()
         self.dialer.start()
         self.observer.send({'msg': 'observe'})
 
-    def _signalHandler(self, signal, stack):
-        self.queue.put_nowait('stop')
+    def __del__(self):
+        self.dialer.close()
+        self.observer.close()
 
-    def mainThread(self, host, port, dial=False):
+    # def _signalHandler(self, signal, stack):
+    #     self.mainbox.put('')
+
+    def mainThread(self, host=None, port=None, dial=False):
         if dial:
             self.dialer.send(('dialReq', host, port))
         else:
             while True:
                 if not self.mainbox.empty():
-                    data = self.queue.get()
+                    data = self.mainbox.get()
                     if data[0] == 'c':
                         remoteAddr = None
                         if data[1] == 'dialReqRecv':
@@ -48,7 +52,9 @@ class PhoneServer(object):
                         print(data[1])
 
                 time.sleep(0.1)
+                # print('alive')
 
 
 if __name__ == '__main__':
-    fire.Fire(PhoneServer)
+    server = PhoneServer()
+    fire.Fire(server)

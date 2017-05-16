@@ -2,9 +2,9 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 18:43:43
+# @Last Modified time: 2017-05-16 19:58:16
 import socket
-from src.threads.base_worker import BaseWorker
+from src.workers.base_worker import BaseWorker
 
 
 class Observer(BaseWorker):
