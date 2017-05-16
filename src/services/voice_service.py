@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-16 16:38:16
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 18:00:57
+# @Last Modified time: 2017-05-16 20:23:11
 from src.workers.listener import Listener
 from src.workers.player import Player
 from src.workers.speaker import Speaker
@@ -45,7 +45,7 @@ class VoiceService:
 if __name__ == "__main__":
     import time
     service = VoiceService()
-    service.anwser('127.0.0.1', 12000)
+    service.anwser('192.168.0.127', 12000)
     while True:
         time.sleep(0.1)
         # service.hangUp()

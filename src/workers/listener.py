@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 17:44:19
+# @Last Modified time: 2017-05-16 20:25:33
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -15,7 +15,7 @@ class Listener(BaseWorker):
         self.frames = frames
         self.PORT = port
         self.listenSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.listenSocket.bind(('127.0.0.1', self.PORT))
+        self.listenSocket.bind(('', self.PORT))
         super(Listener, self).__init__()
 
     def __del__(self):
