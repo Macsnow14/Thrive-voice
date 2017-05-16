@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 21:27:01
+# @Last Modified time: 2017-05-16 23:31:14
 import fire
 import time
 from queue import Queue
@@ -42,11 +42,13 @@ class PhoneServer(object):
                         remoteAddr = None
                         if data[1] == 'dialReqRecv':
                             remoteAddr = data[2]
-                        instruction = None
-                        while instruction != 'accept' and instruction != 'deny':
-                            instruction = input('Incoming telegram, accept or deny?')
-                            print(instruction)
-                        self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
+                            instruction = None
+                            while instruction != 'accept' and instruction != 'deny':
+                                instruction = input('Incoming telegram, accept or deny?\n')
+                                print(instruction)
+                            self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
+                        elif data[1] == 'denied':
+                            print('remote denied')
                     elif data[0] == 'e':
                         print(data[1])
         else:
@@ -59,7 +61,7 @@ class PhoneServer(object):
                             remoteAddr = data[2]
                             instruction = None
                             while instruction != 'accept' and instruction != 'deny':
-                                instruction = input('Incoming telegram, accept or deny?')
+                                instruction = input('Incoming telegram, accept or deny?\n')
                                 print(instruction)
                             self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
                         elif data[1] == 'denied':

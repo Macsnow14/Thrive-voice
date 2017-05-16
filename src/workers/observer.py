@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 21:19:55
+# @Last Modified time: 2017-05-16 21:29:26
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -45,6 +45,6 @@ class Observer(BaseWorker):
                 if message == 'dialReq':
                     self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr[0]))
                 elif message == 'deny':
-                    self.mainbox.put(('m', 'remote_denied'))
+                    self.mainbox.put(('c', 'remote_denied'))
             else:
                 pass
