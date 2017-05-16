@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 20:31:18
+# @Last Modified time: 2017-05-16 21:19:55
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -36,13 +36,15 @@ class Observer(BaseWorker):
                 except AttributeError:
                     pass
             elif msg['msg'] == 'accept':
-                self.service.awnser(msg['host'], msg['port'])
+                self.service.anwser(msg['host'], msg['port'])
             elif msg['msg'] == 'deny':
-                self.connServerSocket.send('deny')
+                self.connTransSocket.send('deny'.encode())
             elif msg['msg'] == 'observe':
                 self.connTransSocket, self.remoteAddr = self.connServerSocket.accept()
                 message = self.connTransSocket.recv(128).decode()
                 if message == 'dialReq':
-                    self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr))
+                    self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr[0]))
+                elif message == 'deny':
+                    self.mainbox.put(('m', 'remote_denied'))
             else:
                 pass
