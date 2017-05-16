@@ -2,9 +2,8 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 20:05:47
+# @Last Modified time: 2017-05-16 20:13:05
 import fire
-import signal
 import time
 from queue import Queue
 from .services.voice_service import VoiceService
@@ -36,6 +35,19 @@ class PhoneServer(object):
     def mainThread(self, host=None, port=None, dial=False):
         if dial:
             self.dialer.send(('dialReq', host, port))
+            while True:
+                if not self.mainbox.empty():
+                    data = self.mainbox.get()
+                    if data[0] == 'c':
+                        remoteAddr = None
+                        if data[1] == 'dialReqRecv':
+                            remoteAddr = data[2]
+                        instruction = None
+                        while instruction != 'accept' or 'deny':
+                            instruction = input('Incoming telegram, accept or deny?')
+                        self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
+                    elif data[0] == 'e':
+                        print(data[1])
         else:
             while True:
                 if not self.mainbox.empty():
