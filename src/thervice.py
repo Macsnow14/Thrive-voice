@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-18 00:28:59
+# @Last Modified time: 2017-05-18 00:52:04
 import fire
 import time
 import signal
@@ -49,6 +49,9 @@ class PhoneServer(object):
                         self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
                     elif data[1] == 'denied':
                         print('remote denied')
+                    elif data[1] == 'hang_up':
+                        self._link = False
+                        self.observer.send({'msg': 'observe'})
                     elif data[1] == 'KeyboardInterruption':
                         if self._link:
                             self.observer.send({'msg': 'hangUp'})
@@ -60,6 +63,7 @@ class PhoneServer(object):
                                 print('to whom you want to call?')
                                 host = input('please input the host name.\n')
                                 self.dialer.send(('dialReq', host, 12000))
+                                self._link = True
                             else:
                                 sys.exit(0)
                 elif data[0] == 'e':

@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-18 00:43:19
+# @Last Modified time: 2017-05-18 00:51:14
 import socket
 import json
 from src.workers.base_worker import BaseWorker
@@ -35,7 +35,7 @@ class Observer(BaseWorker):
                 self.connTransSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.connTransSocket.connect((self.remoteAddr, self.PORT))
                 self.connTransSocket.send("{'code': 0, 'message': 'remote_hang_up}'".encode())
-                self.send({'msg': 'observe'})
+                self.mainbox.put(('c', 'hang_up'))
             elif msg['msg'] == 'accept':
                 self.service.anwser(msg['host'], msg['port'])
                 self.connTransSocket.send('accept'.encode())
@@ -57,7 +57,7 @@ class Observer(BaseWorker):
                     message = json.loads(self.connTransSocket.recv(128).decode())
                     if message['message'] == 'remote_hang_up':
                         self.service.hangUp()
-                        self.send({'msg': 'observe'})
+                        self.mainbox.put(('c', 'hang_up'))
                 else:
                     pass
             else:
