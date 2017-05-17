@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 23:31:14
+# @Last Modified time: 2017-05-17 15:40:58
 import fire
 import time
 from queue import Queue
@@ -50,7 +50,10 @@ class PhoneServer(object):
                         elif data[1] == 'denied':
                             print('remote denied')
                     elif data[0] == 'e':
-                        print(data[1])
+                        print(data[:-1])
+                print(len(self.service.inputFrames))
+                print(len(self.service.outputFrames))
+                time.sleep(0.1)
         else:
             while True:
                 if not self.mainbox.empty():
@@ -67,10 +70,12 @@ class PhoneServer(object):
                         elif data[1] == 'denied':
                             print('remote denied')
                     elif data[0] == 'e':
-                        print(data[1])
+                        print(data[:-1])
+                print(len(self.service.inputFrames))
+                print(len(self.service.outputFrames))
 
-                time.sleep(0.1)
                 # print('alive')
+                time.sleep(0.1)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 20:29:22
+# @Last Modified time: 2017-05-17 14:24:01
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -28,6 +28,7 @@ class Dialer(BaseWorker):
         res = self.dialSocket.recv(128).decode()
         if res == 'accept':
             self.service.anwser(host, port - 1)
-            self.dialSocket.send('client_ready')
+            # self.dialSocket.send('client_ready')
+            self.mainbox.put(('e', 0, 'dial request accepted.'))
         elif res == 'deny':
-            self.mainbox.put((1, 'dial request denied.'))
+            self.mainbox.put(('e', 1, 'dial request denied.'))

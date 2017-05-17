@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 17:44:31
+# @Last Modified time: 2017-05-17 15:48:10
 import pyaudio
 from src.workers.base_worker import BaseWorker
 
@@ -12,7 +12,6 @@ class Recorder(BaseWorker):
     CHANNELS = 2
     RATE = 44100
     FORMAT = pyaudio.paInt16
-    frames = None
 
     def __init__(self, frames):
         self.frames = frames

@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-16 16:38:16
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 20:23:11
+# @Last Modified time: 2017-05-17 15:48:31
 from src.workers.listener import Listener
 from src.workers.player import Player
 from src.workers.speaker import Speaker
@@ -48,4 +48,6 @@ if __name__ == "__main__":
     service.anwser('192.168.0.127', 12000)
     while True:
         time.sleep(0.1)
+        print(len(service.inputFrames))
+        print(len(service.outputFrames))
         # service.hangUp()
