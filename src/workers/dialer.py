@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-17 14:24:01
+# @Last Modified time: 2017-05-18 00:25:47
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -32,3 +32,5 @@ class Dialer(BaseWorker):
             self.mainbox.put(('e', 0, 'dial request accepted.'))
         elif res == 'deny':
             self.mainbox.put(('e', 1, 'dial request denied.'))
+
+        self.close()
