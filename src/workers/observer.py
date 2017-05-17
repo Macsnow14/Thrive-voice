@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 21:29:26
+# @Last Modified time: 2017-05-17 14:14:57
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -37,6 +37,7 @@ class Observer(BaseWorker):
                     pass
             elif msg['msg'] == 'accept':
                 self.service.anwser(msg['host'], msg['port'])
+                self.connTransSocket.send('accept'.encode())
             elif msg['msg'] == 'deny':
                 self.connTransSocket.send('deny'.encode())
             elif msg['msg'] == 'observe':
