@@ -2,14 +2,13 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:01
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-17 15:47:51
+# @Last Modified time: 2017-05-17 23:57:15
 import pyaudio
 from src.workers.base_worker import BaseWorker
 
 
 class Player(BaseWorker):
     BUFFER = 1024
-    FREAM_BUFFER = 10
     CHANNELS = 2
     RATE = 44100
     FORMAT = pyaudio.paInt16
@@ -27,7 +26,5 @@ class Player(BaseWorker):
                              frames_per_buffer=self.BUFFER
                              )
         while True:
-            # if len(self.frames) >= self.FREAM_BUFFER:
-            #     while True:
             if len(self.frames) != 0:
                 stream.write(self.frames.pop(0), self.BUFFER)

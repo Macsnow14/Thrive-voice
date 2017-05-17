@@ -2,9 +2,10 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-17 15:40:58
+# @Last Modified time: 2017-05-17 23:58:16
 import fire
 import time
+# import signal
 from queue import Queue
 from .services.voice_service import VoiceService
 from .workers.dialer import Dialer
@@ -51,8 +52,6 @@ class PhoneServer(object):
                             print('remote denied')
                     elif data[0] == 'e':
                         print(data[:-1])
-                print(len(self.service.inputFrames))
-                print(len(self.service.outputFrames))
                 time.sleep(0.1)
         else:
             while True:
@@ -71,9 +70,6 @@ class PhoneServer(object):
                             print('remote denied')
                     elif data[0] == 'e':
                         print(data[:-1])
-                print(len(self.service.inputFrames))
-                print(len(self.service.outputFrames))
-
                 # print('alive')
                 time.sleep(0.1)
 
