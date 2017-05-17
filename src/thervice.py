@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-18 00:52:04
+# @Last Modified time: 2017-05-18 00:56:50
 import fire
 import time
 import signal
@@ -46,7 +46,12 @@ class PhoneServer(object):
                         instruction = None
                         while instruction != 'accept' and instruction != 'deny':
                             instruction = input('Incoming telegram, accept or deny?\n')
-                        self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
+                        if instruction == 'accept':
+                            self.observer.send({'msg': instruction, 'host': remoteAddr, 'port': 12000})
+                            self._link = True
+                        else:
+                            self.observer.send({'msg': instruction})
+                            self._link = False
                     elif data[1] == 'denied':
                         print('remote denied')
                     elif data[1] == 'hang_up':
