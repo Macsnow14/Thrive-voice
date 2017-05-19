@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 15:49:44
+# @Last Modified time: 2017-05-19 15:54:26
 import fire
 import time
 import signal
@@ -24,6 +24,7 @@ class PhoneServer(object):
         self._link = False
         signal.signal(signal.SIGINT, self._signalHandler)
 
+        self.dialer.start()
         self.observer.start()
         self.observer.send({'msg': 'observe'})
 
@@ -66,7 +67,6 @@ class PhoneServer(object):
                         print('alive-k')
                         if self._link:
                             print('alive-kl')
-                            self.dialer.start()
                             self.dialer.send({'msg': 'hangUp', 'host': self.dialHost, 'port': 12001})
                         else:
                             instruction = None
@@ -75,7 +75,6 @@ class PhoneServer(object):
                             if instruction == 'dial':
                                 print('to whom you want to call?')
                                 self.dialHost = input('please input the host name.\n')
-                                self.dialer.start()
                                 self.dialer.send({'msg': 'dialReq', 'host': self.dialHost, 'port': 12001})
                                 self._link = True
                             else:

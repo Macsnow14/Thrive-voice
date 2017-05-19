@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 15:44:17
+# @Last Modified time: 2017-05-19 16:00:41
 import socket
 import json
 from src.workers.base_worker import BaseWorker
@@ -34,12 +34,14 @@ class Observer(BaseWorker):
                 self.service.anwser(msg['host'], msg['port'])
                 self.connTransSocket.send('accept'.encode())
                 self.mainbox.put(('c', 'set_host', self.remoteAddr))
+                self.send({'msg': 'observe'})
             elif msg['msg'] == 'deny':
                 self.connTransSocket.send('deny'.encode())
                 self.send({'msg': 'observe'})
             elif msg['msg'] == 'observe':
                 self.connTransSocket, self.remoteAddr = self.connServerSocket.accept()
                 message = self.connTransSocket.recv(128).decode()
+                self.mainbox.put(('e', message))
                 if message == 'dialReq':
                     self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr[0]))
                 elif message['message'] == 'remote_hang_up':
