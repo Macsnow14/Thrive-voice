@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:38
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:32:18
+# @Last Modified time: 2017-05-19 16:34:51
 import socket
 from src.workers.base_worker import BaseWorker
 from src.workers.base_worker import WorkerExit
@@ -30,6 +30,6 @@ class Speaker(BaseWorker):
     def run(self):
         host, port = self.recv()
         while True:
-            self.recv()
+            host, port = self.recv()
             if len(self.frames) > 0:
                 self.speakSocket.sendto(self.frames.pop(0), (host, port))
