@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-18 00:25:47
+# @Last Modified time: 2017-05-19 15:43:47
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -22,15 +22,21 @@ class Dialer(BaseWorker):
             pass
 
     def run(self):
-        msg, host, port = self.recv()
-        self.dialSocket.connect((host, port))
-        self.dialSocket.send(msg.encode())
-        res = self.dialSocket.recv(128).decode()
-        if res == 'accept':
-            self.service.anwser(host, port - 1)
-            # self.dialSocket.send('client_ready')
-            self.mainbox.put(('e', 0, 'dial request accepted.'))
-        elif res == 'deny':
-            self.mainbox.put(('e', 1, 'dial request denied.'))
-
-        self.close()
+        while True:
+            msg = self.recv()
+            if msg['msg'] == 'dial':
+                self.dialSocket.connect((msg['host'], msg['port']))
+                self.dialSocket.send(msg.encode())
+                res = self.dialSocket.recv(128).decode()
+                if res == 'accept':
+                    self.service.anwser(msg['host'], msg['port'] - 1)
+                    # self.dialSocket.send('client_ready')
+                    self.mainbox.put(('c', 'dial_accepted.'))
+                elif res == 'deny':
+                    self.mainbox.put(('c', 'denied'))
+                self.dialSocket.close()
+            elif msg['msg'] == 'hangUp':
+                self.dialSocket.connect((msg['host'], msg['port']))
+                self.dialSocket.send("{'code': 0, 'message': 'remote_hang_up}'".encode())
+                self.mainbox.put(('c', 'hang_up'))
+                self.dialSocket.close()
