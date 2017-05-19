@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:00:41
+# @Last Modified time: 2017-05-19 16:05:30
 import socket
 import json
 from src.workers.base_worker import BaseWorker
@@ -46,7 +46,7 @@ class Observer(BaseWorker):
                     self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr[0]))
                 elif message['message'] == 'remote_hang_up':
                     self.service.hangUp()
-                    self.mainbox.put(('c', 'hang_up', self.remoteAddr))
+                    self.mainbox.put(('c', 'hang_up', self.remoteAddr[0]))
                 else:
                     pass
             else:

@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 15:59:22
+# @Last Modified time: 2017-05-19 16:04:39
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -10,7 +10,6 @@ from src.workers.base_worker import BaseWorker
 class Dialer(BaseWorker):
 
     def __init__(self, service, mainbox):
-        self.dialSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.service = service
         self.mainbox = mainbox
         super(Dialer, self).__init__()
@@ -24,6 +23,7 @@ class Dialer(BaseWorker):
     def run(self):
         while True:
             msg = self.recv()
+            self.dialSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             if msg['msg'] == 'dialReq':
                 self.mainbox.put(('e', 'dialing.'))
                 self.dialSocket.connect((msg['host'], msg['port']))
