@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:01
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 17:06:02
+# @Last Modified time: 2017-05-19 17:18:50
 import pyaudio
 from src.workers.base_worker import Worker
 
@@ -20,6 +20,7 @@ class Player(Worker):
 
     def close(self):
         super(Player, self).close()
+        self.stream.stop_stream()
         self.stream.close()
 
     def run(self):
