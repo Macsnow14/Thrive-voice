@@ -2,8 +2,9 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:48
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-17 14:14:57
+# @Last Modified time: 2017-05-19 16:41:10
 import socket
+import json
 from src.workers.base_worker import BaseWorker
 
 
@@ -29,23 +30,24 @@ class Observer(BaseWorker):
     def run(self):
         while True:
             msg = self.recv()
-            if msg['msg'] == 'hangUp':
-                self.service.hangUp()
-                try:
-                    self.connTransSocket.send("{'code': 0, 'massage': 'remote_hang_up'")
-                except AttributeError:
-                    pass
-            elif msg['msg'] == 'accept':
+            if msg['msg'] == 'accept':
                 self.service.anwser(msg['host'], msg['port'])
                 self.connTransSocket.send('accept'.encode())
+                self.mainbox.put(('c', 'set_host', self.remoteAddr[0]))
+                self.send({'msg': 'observe'})
             elif msg['msg'] == 'deny':
                 self.connTransSocket.send('deny'.encode())
+                self.send({'msg': 'observe'})
             elif msg['msg'] == 'observe':
                 self.connTransSocket, self.remoteAddr = self.connServerSocket.accept()
-                message = self.connTransSocket.recv(128).decode()
-                if message == 'dialReq':
+                message = json.loads(self.connTransSocket.recv(128).decode())
+                self.mainbox.put(('e', message))
+                if message['message'] == 'dialReq':
                     self.mainbox.put(('c', 'dialReqRecv', self.remoteAddr[0]))
-                elif message == 'deny':
-                    self.mainbox.put(('c', 'remote_denied'))
+                elif message['message'] == 'remote_hang_up':
+                    self.service.hangUp()
+                    self.mainbox.put(('c', 'hang_up', self.remoteAddr[0]))
+                else:
+                    pass
             else:
                 pass

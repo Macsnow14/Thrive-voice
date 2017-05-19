@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:03:39
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-16 17:37:55
+# @Last Modified time: 2017-05-19 17:01:33
 from queue import Queue
 from threading import Thread, Event
 
@@ -54,6 +54,16 @@ class BaseWorker(object):
         raise NotImplementedError
 
 
+class Worker(BaseWorker):
+
+    def recv_nowait(self):
+        if not self._mailbox.empty():
+            msg = self._mailbox.get()
+            if msg is WorkerExit:
+                raise WorkerExit()
+            return msg
+
+
 if __name__ == '__main__':
     class PrintActor(BaseWorker):
 
@@ -64,6 +74,10 @@ if __name__ == '__main__':
                 # raise RuntimeError
 
     p = PrintActor()
+    p.start()
+    p.send('Hello')
+    p.send('World')
+    p.close()
     p.start()
     p.send('Hello')
     p.send('World')

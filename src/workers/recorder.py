@@ -2,12 +2,12 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-17 15:48:10
+# @Last Modified time: 2017-05-19 17:18:54
 import pyaudio
-from src.workers.base_worker import BaseWorker
+from src.workers.base_worker import Worker
 
 
-class Recorder(BaseWorker):
+class Recorder(Worker):
     BUFFER = 1024
     CHANNELS = 2
     RATE = 44100
@@ -18,12 +18,18 @@ class Recorder(BaseWorker):
         self.p = pyaudio.PyAudio()
         super(Recorder, self).__init__()
 
+    def close(self):
+        super(Recorder, self).close()
+        self.stream.stop_stream()
+        self.stream.close()
+
     def run(self):
-        stream = self.p.open(format=self.FORMAT,
-                             channels=self.CHANNELS,
-                             rate=self.RATE,
-                             input=True,
-                             frames_per_buffer=self.BUFFER
-                             )
+        self.stream = self.p.open(format=self.FORMAT,
+                                  channels=self.CHANNELS,
+                                  rate=self.RATE,
+                                  input=True,
+                                  frames_per_buffer=self.BUFFER
+                                  )
         while True:
-            self.frames.append(stream.read(self.BUFFER))
+            self.recv_nowait()
+            self.frames.append(self.stream.read(self.BUFFER))
