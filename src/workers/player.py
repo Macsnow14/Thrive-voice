@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:01
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 17:02:57
+# @Last Modified time: 2017-05-19 17:06:02
 import pyaudio
 from src.workers.base_worker import Worker
 
@@ -20,16 +20,16 @@ class Player(Worker):
 
     def close(self):
         super(Player, self).close()
-        self.p.close()
+        self.stream.close()
 
     def run(self):
-        stream = self.p.open(format=self.FORMAT,
-                             channels=self.CHANNELS,
-                             rate=self.RATE,
-                             output=True,
-                             frames_per_buffer=self.BUFFER
-                             )
+        self.stream = self.p.open(format=self.FORMAT,
+                                  channels=self.CHANNELS,
+                                  rate=self.RATE,
+                                  output=True,
+                                  frames_per_buffer=self.BUFFER
+                                  )
         while True:
             self.recv_nowait()
             if len(self.frames) != 0:
-                stream.write(self.frames.pop(0), self.BUFFER)
+                self.stream.write(self.frames.pop(0), self.BUFFER)
