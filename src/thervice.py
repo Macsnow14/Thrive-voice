@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 15:40:51
+# @Last Modified time: 2017-05-19 15:49:44
 import fire
 import time
 import signal
@@ -61,13 +61,13 @@ class PhoneServer(object):
                             self.service.hangUp()
                             print('hang up')
                     elif data[1] == 'set_host':
-                        self.host = data[2]
+                        self.dialHost = data[2]
                     elif data[1] == 'KeyboardInterruption':
                         print('alive-k')
                         if self._link:
                             print('alive-kl')
                             self.dialer.start()
-                            self.dialer.send({'msg': 'hangUp', 'host': self.host, 'port': 12001})
+                            self.dialer.send({'msg': 'hangUp', 'host': self.dialHost, 'port': 12001})
                         else:
                             instruction = None
                             while instruction != 'dial' and instruction != 'exit':
@@ -76,7 +76,7 @@ class PhoneServer(object):
                                 print('to whom you want to call?')
                                 self.dialHost = input('please input the host name.\n')
                                 self.dialer.start()
-                                self.dialer.send(('dialReq', self.dialHost, 12001))
+                                self.dialer.send({'msg': 'dialReq', 'host': self.dialHost, 'port': 12001})
                                 self._link = True
                             else:
                                 sys.exit(0)
