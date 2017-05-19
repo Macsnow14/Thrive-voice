@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:01
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:57:41
+# @Last Modified time: 2017-05-19 17:02:57
 import pyaudio
 from src.workers.base_worker import Worker
 
@@ -17,6 +17,10 @@ class Player(Worker):
         self.frames = frames
         self.p = pyaudio.PyAudio()
         super(Player, self).__init__()
+
+    def close(self):
+        super(Player, self).close()
+        self.p.close()
 
     def run(self):
         stream = self.p.open(format=self.FORMAT,

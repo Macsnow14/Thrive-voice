@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:03:39
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:57:34
+# @Last Modified time: 2017-05-19 17:01:33
 from queue import Queue
 from threading import Thread, Event
 
@@ -69,10 +69,15 @@ if __name__ == '__main__':
 
         def run(self):
             while True:
-                print('Got:')
+                msg = self.recv()
+                print('Got:', msg)
                 # raise RuntimeError
 
     p = PrintActor()
+    p.start()
+    p.send('Hello')
+    p.send('World')
+    p.close()
     p.start()
     p.send('Hello')
     p.send('World')
