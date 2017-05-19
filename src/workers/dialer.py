@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 15:14:46
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:09:40
+# @Last Modified time: 2017-05-19 16:17:19
 import socket
 from src.workers.base_worker import BaseWorker
 
@@ -27,7 +27,7 @@ class Dialer(BaseWorker):
             if msg['msg'] == 'dialReq':
                 self.mainbox.put(('e', 'dialing.'))
                 self.dialSocket.connect((msg['host'], msg['port']))
-                self.dialSocket.send("{'code': 0, 'message': '%s'}" % (msg['msg']).encode())
+                self.dialSocket.send(('{"code": 0, "message": "%s"}' % (msg['msg'])).encode())
                 res = self.dialSocket.recv(128).decode()
                 if res == 'accept':
                     self.service.anwser(msg['host'], msg['port'] - 1)
@@ -38,6 +38,6 @@ class Dialer(BaseWorker):
                 self.dialSocket.close()
             elif msg['msg'] == 'hangUp':
                 self.dialSocket.connect((msg['host'], msg['port']))
-                self.dialSocket.send("{'code': 0, 'message': 'remote_hang_up}'".encode())
-                self.mainbox.put(('c', 'hang_up'))
+                self.dialSocket.send('{"code": 0, "message": "remote_hang_up"}'.encode())
+                self.mainbox.put(('c', 'hang_up', msg['host']))
                 self.dialSocket.close()

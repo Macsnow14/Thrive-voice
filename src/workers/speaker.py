@@ -2,9 +2,10 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:38
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-17 14:09:11
+# @Last Modified time: 2017-05-19 16:32:18
 import socket
 from src.workers.base_worker import BaseWorker
+from src.workers.base_worker import WorkerExit
 
 
 class Speaker(BaseWorker):
@@ -20,8 +21,15 @@ class Speaker(BaseWorker):
         except AttributeError:
             pass
 
+    def recv(self):
+        msg = self._mailbox.get_nowait()
+        if msg is WorkerExit:
+            raise WorkerExit()
+        return msg
+
     def run(self):
         host, port = self.recv()
         while True:
+            self.recv()
             if len(self.frames) > 0:
                 self.speakSocket.sendto(self.frames.pop(0), (host, port))
