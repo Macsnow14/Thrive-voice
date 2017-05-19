@@ -2,12 +2,12 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:01
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:44:16
+# @Last Modified time: 2017-05-19 16:57:41
 import pyaudio
-from src.workers.base_worker import BaseWorker
+from src.workers.base_worker import Worker
 
 
-class Player(BaseWorker):
+class Player(Worker):
     BUFFER = 1024
     CHANNELS = 2
     RATE = 44100
@@ -26,5 +26,6 @@ class Player(BaseWorker):
                              frames_per_buffer=self.BUFFER
                              )
         while True:
+            self.recv_nowait()
             if len(self.frames) != 0:
                 stream.write(self.frames.pop(0), self.BUFFER)

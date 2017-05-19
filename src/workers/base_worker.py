@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:03:39
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:22:29
+# @Last Modified time: 2017-05-19 16:57:34
 from queue import Queue
 from threading import Thread, Event
 
@@ -52,6 +52,16 @@ class BaseWorker(object):
 
     def run(self):
         raise NotImplementedError
+
+
+class Worker(BaseWorker):
+
+    def recv_nowait(self):
+        if not self._mailbox.empty():
+            msg = self._mailbox.get()
+            if msg is WorkerExit:
+                raise WorkerExit()
+            return msg
 
 
 if __name__ == '__main__':

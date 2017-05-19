@@ -2,12 +2,12 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:44:25
+# @Last Modified time: 2017-05-19 16:57:48
 import socket
-from src.workers.base_worker import BaseWorker
+from src.workers.base_worker import Worker
 
 
-class Listener(BaseWorker):
+class Listener(Worker):
     BUFFER = 1024
     CHANNELS = 2
 
@@ -26,5 +26,6 @@ class Listener(BaseWorker):
 
     def run(self):
         while True:
+            self.recv_nowait()
             soundData, addr = self.listenSocket.recvfrom(self.BUFFER * self.CHANNELS * 2)
             self.frames.append(soundData)

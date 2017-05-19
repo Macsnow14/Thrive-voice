@@ -2,12 +2,12 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:21:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:44:17
+# @Last Modified time: 2017-05-19 16:57:42
 import pyaudio
-from src.workers.base_worker import BaseWorker
+from src.workers.base_worker import Worker
 
 
-class Recorder(BaseWorker):
+class Recorder(Worker):
     BUFFER = 1024
     CHANNELS = 2
     RATE = 44100
@@ -26,4 +26,5 @@ class Recorder(BaseWorker):
                              frames_per_buffer=self.BUFFER
                              )
         while True:
+            self.recv_nowait()
             self.frames.append(stream.read(self.BUFFER))

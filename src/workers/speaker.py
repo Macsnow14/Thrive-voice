@@ -2,12 +2,12 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:38
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:44:11
+# @Last Modified time: 2017-05-19 16:57:45
 import socket
-from src.workers.base_worker import BaseWorker
+from src.workers.base_worker import Worker
 
 
-class Speaker(BaseWorker):
+class Speaker(Worker):
 
     def __init__(self, frames):
         self.frames = frames
@@ -23,5 +23,6 @@ class Speaker(BaseWorker):
     def run(self):
         host, port = self.recv()
         while True:
+            self.recv_nowait()
             if len(self.frames) > 0:
                 self.speakSocket.sendto(self.frames.pop(0), (host, port))
