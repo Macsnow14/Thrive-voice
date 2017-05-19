@@ -2,10 +2,9 @@
 # @Author: Macsnow
 # @Date:   2017-05-15 14:00:33
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-19 16:32:29
+# @Last Modified time: 2017-05-19 16:44:25
 import socket
 from src.workers.base_worker import BaseWorker
-from src.workers.base_worker import WorkerExit
 
 
 class Listener(BaseWorker):
@@ -25,14 +24,7 @@ class Listener(BaseWorker):
         except AttributeError:
             pass
 
-    def recv(self):
-        msg = self._mailbox.get_nowait()
-        if msg is WorkerExit:
-            raise WorkerExit()
-        return msg
-
     def run(self):
         while True:
-            self.recv()
             soundData, addr = self.listenSocket.recvfrom(self.BUFFER * self.CHANNELS * 2)
             self.frames.append(soundData)
