@@ -2,7 +2,7 @@
 # @Author: Macsnow
 # @Date:   2017-05-03 01:00:54
 # @Last Modified by:   Macsnow
-# @Last Modified time: 2017-05-18 00:56:50
+# @Last Modified time: 2017-05-19 14:25:16
 import fire
 import time
 import signal
@@ -67,7 +67,7 @@ class PhoneServer(object):
                             if instruction == 'dial':
                                 print('to whom you want to call?')
                                 host = input('please input the host name.\n')
-                                self.dialer.send(('dialReq', host, 12000))
+                                self.dialer.send(('dialReq', host, 12001))
                                 self._link = True
                             else:
                                 sys.exit(0)
